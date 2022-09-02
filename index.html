@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="jquery.min.js"></script>
+    <script src="qrcode.min.js"></script>
+    <title>QR Generator</title>
+</head>
+
+<body style="text-align: center;">
+    <div style="margin-top: 50px;">
+        <h3 id="WelcomeMsg"></h3>
+        <input id="data" type="text"
+            style="width: 50%;height: 30px;border: 2px solid black; border-radius: 5px;font-size: 1rem;">
+        <button id="generate" type="button" style="height: 30px;font-size: 1rem;cursor: pointer;"
+            onclick="generateCode()">Generate</button>
+    </div>
+    <h4 id="givendata"></h4>
+    <div style="height: 200px;width: 200px;margin-left: 43%;" id="qr"></div>
+    <br>
+    <button id="another" type="button" style="height: 30px;font-size: 1rem;cursor: pointer;"
+        onclick="resetGenerator()">Generate Another</button>&nbsp;
+    <button id="print" type="button" style="height: 30px;font-size: 1rem;cursor: pointer;"
+        onclick="window.print()">Print</button>
+</body>
+<script>
+    document.getElementById('WelcomeMsg').innerHTML = 'Type Something to generate a QR Code'
+    document.getElementById('data').focus()
+    document.getElementById('another').style.display = 'none'
+    document.getElementById('print').style.display = 'none'
+    document.getElementById('qr').style.display = 'none'
+
+    function generateCode() {
+        var x = document.getElementById('qr');
+        document.getElementById('qr').style.display = 'block'
+        x.innerHTML = ''
+        var data = document.getElementById('data').value;
+        if (!data) {
+            alert("Please enter some value")
+        } else {
+            new QRCode(x, {
+                text: data,
+                width: 200,
+                height: 200
+            })
+            document.getElementById('WelcomeMsg').innerHTML = 'Your QR Code is ready !!'
+            document.getElementById('givendata').innerHTML = data
+            document.getElementById('data').style.display = 'none'
+            document.getElementById('generate').style.display = 'none'
+            document.getElementById('another').style.display = 'inline-block'
+            document.getElementById('print').style.display = 'inline-block'
+        }
+    }
+
+    function resetGenerator() {
+        document.getElementById('data').style.display = 'inline-block'
+        document.getElementById('generate').style.display = 'inline-block'
+        document.getElementById('qr').innerHTML = ''
+        document.getElementById('qr').style.display = 'none'
+        document.getElementById('data').value = ''
+        document.getElementById('another').style.display = 'none'
+        document.getElementById('print').style.display = 'none'
+        document.getElementById('WelcomeMsg').style.display = 'block'
+        document.getElementById('WelcomeMsg').innerHTML = 'Type Something to generate a QR Code'
+        document.getElementById('givendata').innerHTML = ''
+        document.getElementById('givendata').style.display = 'none'
+    }
+
+    window.addEventListener('beforeprint', (e) => {
+        document.getElementById('another').style.display = 'none'
+        document.getElementById('print').style.display = 'none'
+        document.getElementById('WelcomeMsg').style.display = 'none'
+    })
+
+    window.addEventListener('afterprint', (e) => {
+        document.getElementById('another').style.display = 'inline-block'
+    })
+
+    $('#data').on('keydown', (event) => {
+        if (event.keyCode === 13) {
+            generateCode()
+        }
+    })
+</script>
+
+</html>
